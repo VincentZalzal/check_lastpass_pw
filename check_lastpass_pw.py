@@ -1,4 +1,4 @@
-"""Read passwords from a LastPass CSV file and check each of them against
+"""Read passwords from a password CSV file and check each of them against
 the Pwned Passwords database.
 """
 
@@ -21,25 +21,30 @@ def num_pw_found(byte_string):
             return int(info[1])
     return 0
 
-def check_lastpass_csv(filename):
-    """Open a LastPass CSV file and check each password in the file against
+def find_password_key(keys):
+    """Find the password key name in the given list and return it."""
+    if "password" in keys:
+        return "password"
+    if "Password" in keys:
+        return "Password"
+    raise Exception('Unable to find the password column in the CSV file; manually add header row.')
+
+def check_password_csv(filename):
+    """Open a password CSV file and check each password in the file against
     the Pwned Passwords database.
     """
     total_pw = 0
     hacked_pw = 0
     with open(filename, newline='', encoding='utf-8') as csvfile:
         csvreader = csv.DictReader(csvfile)
+        pw_key = find_password_key(csvreader.fieldnames)
         for row in csvreader:
-            passwordCol = 0
-            if "password" in row:
-                passwordCol = "password"
-            elif "Password" in row:
-                passwordCol = "Password"
-            if passwordCol :
-                pw_bytes = row[passwordCol].encode('utf-8')
+            pw_value = row[pw_key]
+            if pw_value is not None:
+                pw_bytes = pw_value.encode('utf-8')
                 num_found = num_pw_found(pw_bytes)
                 if num_found > 0:
-                    print('\nHacked password: "{}" found {} time(s)'.format(row[passwordCol], num_found))
+                    print('\nHacked password: "{}" found {} time(s)'.format(pw_value, num_found))
                     print('Full entry: {}'.format(row))
                     hacked_pw += 1
                 else:
@@ -50,4 +55,4 @@ def check_lastpass_csv(filename):
     print('\nChecked {} passwords, {} have been hacked.'.format(total_pw, hacked_pw))
 
 if __name__ == "__main__":
-    check_lastpass_csv('export.csv')
+    check_password_csv('export.csv')
