@@ -28,14 +28,18 @@ def check_lastpass_csv(filename):
     total_pw = 0
     hacked_pw = 0
     with open(filename, newline='', encoding='utf-8') as csvfile:
-        csvreader = csv.reader(csvfile)
-        next(csvreader) # skip header row
+        csvreader = csv.DictReader(csvfile)
         for row in csvreader:
-            if len(row) == 7:
-                pw_bytes = row[2].encode('utf-8')
+            passwordCol = 0
+            if "password" in row:
+                passwordCol = "password"
+            elif "Password" in row:
+                passwordCol = "Password"
+            if passwordCol :
+                pw_bytes = row[passwordCol].encode('utf-8')
                 num_found = num_pw_found(pw_bytes)
                 if num_found > 0:
-                    print('\nHacked password: "{}" found {} time(s)'.format(row[2], num_found))
+                    print('\nHacked password: "{}" found {} time(s)'.format(row[passwordCol], num_found))
                     print('Full entry: {}'.format(row))
                     hacked_pw += 1
                 else:
