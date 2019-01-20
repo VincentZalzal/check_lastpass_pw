@@ -27,7 +27,7 @@ def check_lastpass_csv(filename):
     """
     total_pw = 0
     hacked_pw = 0
-    with open(filename, newline='') as csvfile:
+    with open(filename, newline='', encoding='utf-8') as csvfile:
         csvreader = csv.reader(csvfile)
         next(csvreader) # skip header row
         for row in csvreader:
