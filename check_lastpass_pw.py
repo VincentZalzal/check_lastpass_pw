@@ -27,6 +27,8 @@ def find_password_key(keys):
         return "password"
     if "Password" in keys:
         return "Password"
+    if "login_password" in keys:
+        return "login_password"
     raise Exception('Unable to find the password column in the CSV file; manually add header row.')
 
 def check_password_csv(filename):
@@ -40,7 +42,7 @@ def check_password_csv(filename):
         pw_key = find_password_key(csvreader.fieldnames)
         for row in csvreader:
             pw_value = row[pw_key]
-            if pw_value is not None:
+            if pw_value is not None and pw_value != "":
                 pw_bytes = pw_value.encode('utf-8')
                 num_found = num_pw_found(pw_bytes)
                 if num_found > 0:
@@ -50,8 +52,8 @@ def check_password_csv(filename):
                 else:
                     print('.', end='', flush=True)
                 total_pw += 1
-            else:
-                print('\nBadly formatted row: {}'.format(row))
+            #else:
+            #    print('\nBadly formatted row: {}'.format(row))
     print('\nChecked {} passwords, {} have been hacked.'.format(total_pw, hacked_pw))
 
 if __name__ == "__main__":

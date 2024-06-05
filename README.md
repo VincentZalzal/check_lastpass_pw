@@ -1,8 +1,8 @@
 # check_lastpass_pw
 
 This is a simple python script to check a password CSV export file against the
-Pwned Passwords database. This should work directly with LastPass and Keepass
-export files.
+Pwned Passwords database. This should work directly with LastPass, Keepass,
+and Bitwarden export files.
 
 ## Requirements
 
@@ -17,7 +17,7 @@ text file. To avoid having to modify the script, name the file `export.csv`, and
 save it next to the python script.
 
 **Note**: the first row of the CSV file is assumed to contain the column names.
-It should contain either 'password' or 'Password'.
+It should contain either 'password', 'Password', or 'login_password'.
 
 **Note**: the script assumes the CSV file is encoded in utf-8.
 
